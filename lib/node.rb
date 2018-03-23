@@ -2,9 +2,12 @@ class Node
   attr_reader :value,
               :children
 
-  def initialize(value)
+  attr_accessor :word
+
+  def initialize(value, word = false)
     @value = value
     @children = {}
+    @word = word
   end
 
   def set_child(value, node)
@@ -13,5 +16,9 @@ class Node
 
   def child(key)
     children[key.to_sym]
+  end
+
+  def word?
+    @word
   end
 end
