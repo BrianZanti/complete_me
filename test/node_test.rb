@@ -53,7 +53,7 @@ class NodeTest < Minitest::Test
 
   def test_non_word_node_can_be_set_as_word_node
     node = Node.new("a")
-    node.set_as_word
+    node.word = true
     assert node.word?
   end
 end
