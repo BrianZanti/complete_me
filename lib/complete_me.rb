@@ -7,17 +7,28 @@ class CompleteMe
     @root = Node.new(nil)
   end
 
-  def insert(word, current_node = @root)
+  def insert(word, current = @root)
     return if word == ""
     first_char = word[0]
     word[0] = ""
-    next_node = current_node.child(first_char)
+    next_node = current.child(first_char)
     if next_node == nil
-      new_node = Node.new(first_char)
-      current_node.set_child(first_char, new_node)
-      insert(word, new_node)
-    else
-      insert(word,next_node)
+      next_node = Node.new(first_char)
+      current.set_child(first_char, next_node)
+    end
+    insert(word, next_node)
+  end
+
+  def count(current = @root)
+    return 1 if current.children.count == 0
+    current.children.reduce(0) do |total, (value, node)|
+      total + count(node)
+    end
+  end
+
+  def populate(words)
+    words.each_line do |word|
+      insert(word)
     end
   end
 end

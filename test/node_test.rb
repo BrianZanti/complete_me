@@ -40,4 +40,20 @@ class NodeTest < Minitest::Test
     assert_equal node_c, node_a.child("c")
     assert_equal node_d, node_a.child("d")
   end
+
+  def test_is_not_word_node_by_default
+    node = Node.new("a")
+    refute node.word?
+  end
+
+  def test_can_be_created_as_word_node
+    node = Node.new("a", true)
+    assert node.word?
+  end
+
+  def test_non_word_node_can_be_set_as_word_node
+    node = Node.new("a")
+    node.set_as_word
+    assert node.word?
+  end
 end
