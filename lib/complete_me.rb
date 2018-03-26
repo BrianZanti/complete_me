@@ -8,7 +8,7 @@ class CompleteMe
   end
 
   def insert(word, current = @root)
-    first_char = word[0].downcase
+    first_char = word[0]
     word[0] = ""
     next_node = current.child(first_char)
     if next_node == nil
