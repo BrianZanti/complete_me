@@ -39,23 +39,23 @@ class CompleteMe
 
   def suggest(fragment)
     start_node = find(fragment)
-    suffixes = traverse(start_node, "").flatten
-    suffixes.map do |suffix|
-      fragment + suffix
-    end
+    suffixes = traverse(start_node, fragment)
   end
 
   def traverse(current, word)
-    return word if current.children.count == 0
-    current.children.reduce([]) do |words, (char, node)|
-      words << traverse(node, word + char.to_s)
+    child_words = []
+    if current.word?
+      child_words << word
+    end
+    child_words + current.children.reduce([]) do |words, (char, node)|
+      words + traverse(node, word + char.to_s)
     end
   end
 
   def find(fragment, current = @root)
     return current if fragment == ""
     first_char = fragment[0]
-    fragment[0] = ""
+    fragment = fragment[1..-1]
     next_node = current.child(first_char)
     return nil if next_node == nil
     find(fragment, next_node)
