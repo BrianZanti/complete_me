@@ -1,10 +1,14 @@
 require_relative './node'
 
 class CompleteMe
-  attr_reader :root
+  attr_reader :root,
+              :selections
 
   def initialize
     @root = Node.new(nil)
+    @selections = Hash.new do |hash, key|
+      hash[key] = Hash.new(0)
+    end
   end
 
   def insert(word, current = @root)
@@ -39,7 +43,20 @@ class CompleteMe
 
   def suggest(fragment)
     start_node = find(fragment)
-    suffixes = traverse(start_node, fragment)
+    suggestions = traverse(start_node, fragment)
+    selections = weigh_selections(fragment)
+    combined_suggestions = selections + suggestions
+    combined_suggestions.uniq
+  end
+
+  def weigh_selections(fragment)
+    selections = @selections[fragment.to_sym]
+    sorted = selections.sort_by do |word, count|
+      count
+    end.reverse
+    sorted.map do |word, count|
+      word.to_s
+    end
   end
 
   def traverse(current, word)
@@ -59,5 +76,9 @@ class CompleteMe
     next_node = current.child(first_char)
     return nil if next_node == nil
     find(fragment, next_node)
+  end
+
+  def select(fragment, word)
+    @selections[fragment.to_sym][word.to_sym] += 1
   end
 end
