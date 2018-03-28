@@ -78,7 +78,35 @@ class CompleteMe
     find(fragment, next_node)
   end
 
+  def include?(word)
+    node = find(word)
+    return false unless node
+    node.word?
+  end
+
+
   def select(fragment, word)
     @selections[fragment.to_sym][word.to_sym] += 1
+    insert(word)
+  end
+
+  def delete(current, word)
+    # if word is found and node has no children
+      #return true
+    # elsif if word is found and node has children
+      #set node to not a word
+      # return false
+    # else node is not found, current node is a parent of the word node
+      # figure out what the next node is
+      # recursively call delete on next node
+      # if recursive call returned false
+        # return false
+      # else
+        # delete the next node
+        # return false if current node is a word
+          # or
+        #has children other than the next node
+        # otherwise return true
+
   end
 end
