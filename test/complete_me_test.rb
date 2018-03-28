@@ -181,6 +181,8 @@ class CompleteMeTest < Minitest::Test
   def test_delete
     @cm.delete("pizzicato")
     @cm.delete("pizzapizza")
+    refute @cm.include? "pizzicato"
+    refute @cm.include? "pizzapizza"
     assert @cm.include? "pizza"
     pizz = @cm.root.child("p")
                    .child("i")
@@ -189,7 +191,7 @@ class CompleteMeTest < Minitest::Test
     assert_equal 3, pizz.children.length
   end
 
-  def test_suggest_whole_dictionary
+  def test_whole_dictionary
     skip
     @cm.populate(File.read("/usr/share/dict/words"))
     suggestions = ["pize", "pizza", "pizzeria", "pizzicato", "pizzle"]

@@ -90,7 +90,24 @@ class CompleteMe
     insert(word)
   end
 
-  def delete(current, word)
+  def delete(current = @root, word)
+    if word == ""
+      if current.children.empty?
+        return true
+      else
+        current.word = false
+        return false
+      end
+    else
+      first_char = word[0]
+      next_node = current.child(first_char)
+      word = word[1..-1]
+      delete_next_node = delete(next_node, word)
+      return false unless delete_next_node
+      current.children.delete(first_char.to_sym)
+      return current.children.empty? && !current.word?
+    end
+  end
     # if word is found and node has no children
       #return true
     # elsif if word is found and node has children
@@ -103,10 +120,6 @@ class CompleteMe
         # return false
       # else
         # delete the next node
-        # return false if current node is a word
-          # or
-        #has children other than the next node
-        # otherwise return true
-
-  end
+        # return true if current node is not word && has no children
+        # otherwise return false
 end
