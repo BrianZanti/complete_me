@@ -60,13 +60,17 @@ class CompleteMeTest < Minitest::Test
     assert_equal empty_children, leaf.children
   end
 
+  def test_selecting_should_add_to_dictionary
+    assert @cm.include? "pizzeria"
+  end
+
   def test_count
-    assert_equal 8, @cm.count
+    assert_equal 9, @cm.count
   end
 
   def test_inserting_duplicates_has_no_effect
     @cm.insert("pizza")
-    assert_equal 8, @cm.count
+    assert_equal 9, @cm.count
   end
 
   def test_inserting_superstring_words_will_maintain_substring_as_word
@@ -93,7 +97,7 @@ class CompleteMeTest < Minitest::Test
   def test_populate
     words = "A\na\naa\naal\naalii\naam\nAani\naardwolf\nAaron\n"
     @cm.populate(words)
-    assert_equal 17, @cm.count
+    assert_equal 18, @cm.count
   end
 
   def test_find
@@ -103,10 +107,13 @@ class CompleteMeTest < Minitest::Test
     assert_instance_of Node, found_node.child("l")
     assert_instance_of Node, found_node.child("a")
     assert_instance_of Node, found_node.child("i")
-    assert_nil found_node.child("e")
+    assert_nil found_node.child("x")
   end
 
-  def test_methods_arent_destructive
+  def test_include
+    refute @cm.include? "piz"
+    assert @cm.include? "pizza"
+    refute @cm.include? "peach"
   end
 
   def test_traverse
@@ -161,10 +168,25 @@ class CompleteMeTest < Minitest::Test
     assert_equal "pizza", suggestions[0]
     assert_equal "pizzicato", suggestions[1]
     assert_equal "pizzapizza", suggestions[2]
-    assert_equal 5, suggestions.length
+    assert_equal 6, suggestions.length
   end
 
-  def test_selecting_should_add_to_dictionary
+  def test_delete_intermediate_node
+    skip
+    @cm.delete("pizza")
+    refute @cm.include? "pizza"
+    assert_equal 8, @cm.count
+  end
+
+  def test_delete
+    @cm.delete("pizzicato")
+    @cm.delete("pizzapizza")
+    assert @cm.include? "pizza"
+    pizz = @cm.root.child("p")
+                   .child("i")
+                   .child("z")
+                   .child("z")
+    assert_equal 3, pizz.children.length
   end
 
   def test_suggest_whole_dictionary
