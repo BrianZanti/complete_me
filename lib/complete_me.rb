@@ -42,9 +42,10 @@ class CompleteMe
   end
 
   def suggest(fragment)
+    substring = fragment.dup
     start_node = find(fragment)
-    suggestions = traverse(start_node, fragment)
-    selections = weigh_selections(fragment)
+    suggestions = traverse(start_node, substring)
+    selections = weigh_selections(substring)
     combined_suggestions = selections + suggestions
     combined_suggestions.uniq
   end
@@ -72,7 +73,8 @@ class CompleteMe
   def find(fragment, current = @root)
     return current if fragment == ""
     first_char = fragment[0]
-    fragment = fragment[1..-1]
+    # fragment = fragment[1..-1]
+    fragment[0] = ""
     next_node = current.child(first_char)
     return nil if next_node == nil
     find(fragment, next_node)
@@ -99,27 +101,31 @@ class CompleteMe
         return false
       end
     else
-      first_char = word[0]
-      next_node = current.child(first_char)
-      word = word[1..-1]
-      delete_next_node = delete(next_node, word)
-      return false unless delete_next_node
-      current.children.delete(first_char.to_sym)
-      return current.children.empty? && !current.word?
+      parent_delete(current, word)
     end
   end
-    # if word is found and node has no children
-      #return true
-    # elsif if word is found and node has children
-      #set node to not a word
-      # return false
-    # else node is not found, current node is a parent of the word node
-      # figure out what the next node is
-      # recursively call delete on next node
-      # if recursive call returned false
-        # return false
-      # else
-        # delete the next node
-        # return true if current node is not word && has no children
-        # otherwise return false
+
+  def parent_delete(current, word)
+    first_char = word[0]
+    next_node = current.child(first_char)
+    word = word[1..-1]
+    delete_next_node = delete(next_node, word)
+    return false unless delete_next_node
+    current.children.delete(first_char.to_sym)
+    return current.children.empty? && !current.word?
+  end
+  # if word is found and node has no children
+  #return true
+  # elsif if word is found and node has children
+  #set node to not a word
+  # return false
+  # else node is not found, current node is a parent of the word node
+  # figure out what the next node is
+  # recursively call delete on next node
+  # if recursive call returned false
+  # return false
+  # else
+  # delete the next node
+  # return true if current node is not word && has no children
+  # otherwise return false
 end
